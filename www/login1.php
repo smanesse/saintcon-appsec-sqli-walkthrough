@@ -13,6 +13,18 @@ ini_set('display_errors', 1);
 	</head>
 
   <body>
+  <script>
+    // Function to clear the SQL query and the "Login Successful" message
+    function clearData() {
+        document.getElementById('sqlQuery').innerHTML = '';
+        document.getElementById('loginSuccessMessage').innerHTML = '';
+    }
+</script>
+
+
+
+
+
   <div class="container-narrow">
 		
 		<div class="jumbotron">
@@ -46,7 +58,7 @@ ini_set('display_errors', 1);
 			<br />
 			<p>
 			<input type="submit" value="Submit"/> 
-			<input type="reset" value="Reset"/>
+			<input type="reset" value="Reset" onclick="clearData()"  />
 			</p>
 		</form>
         </div>
@@ -66,14 +78,9 @@ $pass = $_REQUEST['password'];
 
 $q = "SELECT * FROM users where username='".$username."' AND password = '".md5($pass)."'" ;
 
-if (isset($_GET['debug']))
-{
-	if ($_GET['debug']=="true")
-{
-	$msg="<div style=\"border:1px solid #4CAF50; padding: 10px\">".$q."</div><br />";
+
+	$msg="<div id=\"sqlQuery\" style=\"border:1px solid #4CAF50; padding: 10px\">".$q."</div><br />";
 	echo $msg;
-	}
-}
 
 		if (!mysqli_query($con,$q))
 	{
@@ -101,6 +108,7 @@ if (mysqli_warning_count($con)) {
 	
 	if ($row){
 	//$_SESSION["id"] = $row[0];
+	echo "<font id=\"loginSuccessMessage\" style=\"color:#008000\">Login Successfull!</font\>";
 	$_SESSION["username"] = $row[1];
 	$_SESSION["name"] = $row[3];
 	//ob_clean();
