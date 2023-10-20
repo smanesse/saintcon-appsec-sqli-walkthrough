@@ -9,7 +9,6 @@ $username = "";
 $pass = "";
 $queryType = "vulnerable"; // Default query type
 $message = "";
-$executedQuery = "";
 
 // Check if the form was submitted
 if (!empty($_POST['uid'])) {
@@ -22,15 +21,9 @@ if (!empty($_POST['uid'])) {
     if ($queryType === "vulnerable") {
         // Vulnerable SQL query (unsafe)
         $sqlQuery = "SELECT * FROM users where username='" . $username . "' AND password = '" . md5($pass) . "'";
-        $executedQuery = $sqlQuery;
     } elseif ($queryType === "prepared") {
         // Secure prepared statement query
         $sqlQuery = "SELECT * FROM users where username=? AND password = ?";
-        $executedQuery = $sqlQuery . "\n";
-        $executedQuery .= "\$stmt = \$con->prepare(\$sqlQuery);\n";
-        $executedQuery .= "\$stmt->bind_param(\"ss\", \"$username\", md5(\"$pass\"));\n";
-        $executedQuery .= "\$stmt->execute();\n";
-        $executedQuery .= "\$result = \$stmt->get_result();";
     }
 
     if ($queryType === "vulnerable") {
@@ -40,7 +33,7 @@ if (!empty($_POST['uid'])) {
         if ($result) {
             $row = mysqli_fetch_array($result);
             if ($row) {
-                $message = "Login Successful!";
+                $message = "success";
                 $_SESSION["username"] = $row[1];
                 $_SESSION["name"] = $row[3];
                 if ($_SESSION['next'] === "searchproducts.php") {
@@ -51,7 +44,7 @@ if (!empty($_POST['uid'])) {
                     header('Location: os_sqli.php?user=' . $_SESSION["username"]);
                 }
             } else {
-                $message = "Invalid password!";
+                $message = "error";
             }
         } else {
             echo 'Error: ' . mysqli_error($con);
@@ -66,7 +59,7 @@ if (!empty($_POST['uid'])) {
         if ($result) {
             $row = mysqli_fetch_array($result);
             if ($row) {
-                $message = "Login Successful!";
+                $message = "success";
                 $_SESSION["username"] = $row[1];
                 $_SESSION["name"] = $row[3];
                 if ($_SESSION['next'] === "searchproducts.php") {
@@ -77,7 +70,7 @@ if (!empty($_POST['uid'])) {
                     header('Location: os_sqli.php?user=' . $_SESSION["username"]);
                 }
             } else {
-                $message = "Invalid password!";
+                $message = "error";
             }
         } else {
             echo 'Error: ' . mysqli_error($con);
@@ -125,35 +118,30 @@ if (!empty($_POST['uid'])) {
                 Password: <input type="password" id="password" name="password" value="<?php echo $pass; ?>"><br/><br/>
                 Choose SQL Query Type:
                 <input type="radio" name="query_type" value="vulnerable" id="radio_vulnerable"
-                       <?php if ($queryType === "vulnerable") echo "checked"; ?>> Vulnerable SQL Injection
+                       <?php if ($queryType === "vulnerable") echo "checked"; ?>> Option A
                 <input type="radio" name="query_type" value="prepared" id="radio_prepared"
-                       <?php if ($queryType === "prepared") echo "checked"; ?>> Prepared Statement
+                       <?php if ($queryType === "prepared") echo "checked"; ?>> Option B
             </p>
             <p>
                 <input type="submit" value="Submit"/>
                 <input type="reset" value="Reset" onclick="clearData()"/>
             </p>
         </form>
+
+        <?php
+        if (!empty($message)) {
+            if ($message === "success") {
+                echo "<font id=\"loginSuccessMessage\" style=\"color:#008000\">Login Successful!</font>";
+            } elseif ($message === "error") {
+                echo "<font style=\"color:#FF0000\">Invalid password!</font>";
+            }
+        }
+        ?>
     </div>
-
-    <!-- Display login message -->
-    <?php if (!empty($message)) : ?>
-        <div id="login_message" style="color:<?php echo ($message === 'Login Successful!') ? '#008000' : '#FF0000'; ?>">
-            <?php echo $message; ?>
-        </div>
-    <?php endif; ?>
-
-    <!-- Display executed query -->
-    <?php if (!empty($executedQuery)) : ?>
-        <div id="executed_query" style="border:1px solid #4CAF50; padding: 10px">
-            <h3>Executed Query</h3>
-            <pre><?php echo htmlspecialchars($executedQuery); ?></pre>
-        </div>
-    <?php endif; ?>
 
     <!-- Code snippets for each query type -->
     <div id="vulnerable_code" style="display:none;">
-        <h3>Vulnerable SQL Injection Code</h3>
+        <h3>Option A Code</h3>
         <textarea rows='15' cols='120' readonly style='border:1px solid #4CAF50; padding: 10px'>
             $sqlQuery = "SELECT * FROM users where username='" . $username . "' AND password = '" . md5($pass) . "'";
             
@@ -162,7 +150,7 @@ if (!empty($_POST['uid'])) {
     </div>
 
     <div id="prepared_code" style="display:none;">
-        <h3>Prepared Statement Code</h3>
+        <h3>Option B Code</h3>
         <textarea rows='15' cols='120' readonly style='border:1px solid #4CAF50; padding: 10px'>
             $sqlQuery = "SELECT * FROM users where username=? AND password = ?";
             $stmt = $con->prepare($sqlQuery);
