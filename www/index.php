@@ -212,7 +212,7 @@ $result = $stmt->get_result();
 		    </div>
 		</div>
 	</div>
-	<div style="width:200px"></div>
+	<div style="flex-grow:1"></div>
 	</div>
 </div>
 
