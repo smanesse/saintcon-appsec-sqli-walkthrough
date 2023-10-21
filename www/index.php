@@ -99,7 +99,7 @@ if (!empty($_REQUEST['uid'])) {
 			<ol>
 			<li>Log in as the user "bob" using SQL injection (string concatentation)
 				<ul>
-					<li>Enter "bob" as the username and some random password.</li>
+					<li>Enter "bob" as the username and some random password, then submit</li>
 					<li>Note the "Executed Query" listed below - see the single quotes around bob? What happens when you try again with a single quote in your username?</li>
 					<li>Hijack the query by entering the following username with any password: <pre>bob' -- -</pre></li>
 					<li>Why does this work? The single quote allows you to "escape" out of the username part of the query and put your own code. The double-dash (--) is a comment, which means the rest of the query is ignored.</li>
@@ -108,6 +108,8 @@ if (!empty($_REQUEST['uid'])) {
 			</li>
 			<li>Attempt the same exploit against a prepared statement
 				<ul>
+				<li>Select the "Prepared statement" option.</li>
+				<li>Run the same exploit again.</li>
 				<li>Notice the same exploit is impossible. Any data you enter doesn't get treated as SQL code.</li>
 				</ul>
 			</li>
