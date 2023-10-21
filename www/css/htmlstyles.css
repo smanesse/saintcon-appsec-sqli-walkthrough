@@ -36,8 +36,7 @@ body {
 }
 
 .container-narrow {
-  margin: 0 auto;
-  max-width: 1000px;
+  margin: auto;
 }
 .container-narrow > hr {
   margin: 30px 0;
@@ -45,7 +44,6 @@ body {
 
 
 .jumbotron {
-  text-align: center;
   border-bottom: solid #ffe5e5;
 }
 .jumbotron .btn {
@@ -140,4 +138,13 @@ body {
   .jumbotron h1 {
     font-size: 63px;
   }
+}
+
+div.rounded {
+	border-radius: 10px;
+	margin:10px 0px;
+}
+
+li {
+	margin-top:3px;
 }

@@ -3,7 +3,7 @@ services:
     www:
         build: .
         ports: 
-            - "8000:80"
+            - "8002:80"
         volumes:
             - ./www:/var/www/html/
         links:
@@ -14,7 +14,7 @@ services:
     db:
         image: mysql:8.0
         ports: 
-            - "3306:3306"
+            - "33062:3306"
         command: --default-authentication-plugin=mysql_native_password --secure-file-priv=''
         environment:
             MYSQL_DATABASE: sqlitraining
